@@ -1,0 +1,17 @@
+env: "local"
+
+server:
+  address: ":8080"
+  
+database:
+  host: "localhost"
+  port: 5430
+  name: "order_db"
+  user: "order_user"
+  password: "order_password"
+  sslmode: "disable"
+
+kafka:
+  brokers: ["localhost:9092"]
+  topic: "orders"
+  group_id: "order-service-group"

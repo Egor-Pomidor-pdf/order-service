@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Lookup</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #result { margin-top: 20px; white-space: pre-wrap; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>Order Lookup</h1>
+  <label for="orderId">Enter Order UID:</label>
+  <input type="text" id="orderId" placeholder="e.g. b563feb7b2b84b6test">
+  <button onclick="fetchOrder()">Search</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function fetchOrder() {
+      const orderId = document.getElementById("orderId").value.trim();
+      const resultDiv = document.getElementById("result");
+      if (!orderId) {
+        resultDiv.textContent = "⚠️ Please enter an Order UID";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/order/${orderId}`);
+        if (!res.ok) {
+          const err = await res.json();
+          resultDiv.textContent = `❌ Error: ${err.error}`;
+          return;
+        }
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultDiv.textContent = `❌ Failed to fetch: ${e.message}`;
+      }
+    }
+  </script>
+</body>
+</html>

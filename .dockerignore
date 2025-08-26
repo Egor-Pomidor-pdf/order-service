@@ -1,0 +1,28 @@
+**/.git
+**/.gitignore
+**/.dockerignore
+**/.env
+**/.env.example
+**/README.md
+
+# Go
+**/vendor
+**/go.sum
+**/bin
+**/*.exe
+**/*.out
+
+# IDE
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# Logs and temp files
+**/*.log
+**/logs
+**/tmp
+
+# Database files
+**/*.db
+**/pgdata
