@@ -1,23 +1,16 @@
-package server
+package handler
 
 import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
 
-	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
 	"github.com/go-chi/chi/v5"
 )
 
-type OrderHTTPHandler struct {
-    service *order.OrderService
-}
 
-func NewOrderHTTPHandler(service *order.OrderService) *OrderHTTPHandler {
-    return &OrderHTTPHandler{service: service}
-}
 
-func (h *OrderHTTPHandler) GetOrderHandler(w http.ResponseWriter, r *http.Request) {
+func (h * OrderHandler) GetOrderHandler(w http.ResponseWriter, r *http.Request) {
 	order_uid := chi.URLParam(r, "order_uid")
 	order, err := h.service.GetOrder(r.Context(), order_uid)
 	w.Header().Set("Content-Type", "application/json")

@@ -1,20 +1,31 @@
-package order
+package service
 
 import (
 	"context"
+	"errors"
 	"sync"
+
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
+type OrderServiceInterface interface {
+	ProcessOrder(ctx context.Context, order order.Order) error
+	GetOrder(ctx context.Context, uid string) (*order.Order, error)
+}
+
 type OrderService struct {
-	repo  OrderRepository
-	cache map[string]Order
+	repo  repository.OrderRepository
+	cache map[string]order.Order
 	mu    sync.RWMutex
 }
 
-func NewOrderService(repo OrderRepository) *OrderService {
+func NewOrderService(repo *repository.OrderRepository) *OrderService {
 	service := &OrderService{
-		repo:  repo,
-		cache: make(map[string]Order),
+		repo:  *repo,
+		cache: make(map[string]order.Order),
 	}
 	service.restoreCache(context.Background())
 	return service
@@ -34,7 +45,7 @@ func (s *OrderService) restoreCache(ctx context.Context) {
 }
 
 
-func (s *OrderService) ProcessOrder(ctx context.Context, order Order) error {
+func (s *OrderService) ProcessOrder(ctx context.Context, order order.Order) error {
 	if err := s.repo.SaveOrder(ctx, &order); err != nil {
 		return err
 	}
@@ -46,7 +57,7 @@ func (s *OrderService) ProcessOrder(ctx context.Context, order Order) error {
 	return nil
 }
 
-func (s *OrderService) GetOrder(ctx context.Context, uid string) (*Order, error) {
+func (s *OrderService) GetOrder(ctx context.Context, uid string) (*order.Order, error) {
 	// Проверяем кэш
 	s.mu.RLock()
 	cachedOrder, exists := s.cache[uid]
@@ -59,7 +70,7 @@ func (s *OrderService) GetOrder(ctx context.Context, uid string) (*Order, error)
 	// Если нет в кэше, ищем в БД
 	order, err := s.repo.GetOrderByUID(ctx, uid)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Service Error")
 	}
 
 	// Обновляем кэш

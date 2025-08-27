@@ -1,10 +1,12 @@
-package order
+package repository
 
 import (
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
+
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 )
@@ -17,7 +19,7 @@ func NewOrderRepository(db *sqlx.DB) *OrderRepository {
 	return &OrderRepository{db: db}
 }
 
-func (r *OrderRepository) SaveOrder(ctx context.Context, order *Order) error {
+func (r *OrderRepository) SaveOrder(ctx context.Context, order *order.Order) error {
 	const op = "repository.order.SaveOrder"
 
 	tx, err := r.db.BeginTxx(ctx, nil)
@@ -90,10 +92,10 @@ func (r *OrderRepository) SaveOrder(ctx context.Context, order *Order) error {
 	return tx.Commit()
 }
 
-func (r *OrderRepository) GetOrderByUID(ctx context.Context, uid string) (*Order, error) {
+func (r *OrderRepository) GetOrderByUID(ctx context.Context, uid string) (*order.Order, error) {
 	const op = "repository.order.GetOrderByUID"
 
-	var order Order
+	var order order.Order
 	err := r.db.GetContext(ctx, &order, `
 		SELECT * FROM orders WHERE order_uid = $1`, uid)
 	if err != nil {
@@ -127,10 +129,10 @@ func (r *OrderRepository) GetOrderByUID(ctx context.Context, uid string) (*Order
 	return &order, nil
 }
 
-func (r *OrderRepository) GetAllOrders(ctx context.Context) ([]Order, error) {
+func (r *OrderRepository) GetAllOrders(ctx context.Context) ([]order.Order, error) {
 	const op = "repository.order.GetAllOrders"
 
-	var orders []Order
+	var orders []order.Order
 	err := r.db.SelectContext(ctx, &orders, `SELECT * FROM orders`)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)

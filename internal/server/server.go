@@ -5,19 +5,20 @@ import (
 	"time"
 
 	"github.com/Egor-Pomidor-pdf/order-service/internal/config"
-	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/handler"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/service"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func NewServer(cfg config.ServerConfig, orderService *order.OrderService) *http.Server {
+func NewServer(cfg config.ServerConfig, orderService *service.OrderService) *http.Server {
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	orderHandler := NewOrderHTTPHandler(orderService)
+	orderHandler := handler.NewOrderHandler(orderService)
 
 	router.Get("/order/{order_uid}", orderHandler.GetOrderHandler)
 

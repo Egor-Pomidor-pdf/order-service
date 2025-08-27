@@ -1,4 +1,4 @@
-package order
+package handler
 
 import (
 	"context"
@@ -6,23 +6,18 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/go-playground/validator/v10"
 )
 
-type OrderHandler struct {
-	service *OrderService
-}
 
-func NewOrderHandler(service *OrderService) *OrderHandler {
-	return &OrderHandler{service: service}
-}
 
 
 var validate = validator.New()
 
 func (h *OrderHandler) HandleMessage(message []byte, offset kafka.Offset) error {
-	var order Order
+	var order order.Order
 
 	if err := json.Unmarshal(message, &order); err != nil {
         return fmt.Errorf("INVALID_JSON: %w", err)

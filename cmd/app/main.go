@@ -14,7 +14,9 @@ import (
 	"github.com/Egor-Pomidor-pdf/order-service/internal/config"
 	"github.com/Egor-Pomidor-pdf/order-service/internal/db"
 	"github.com/Egor-Pomidor-pdf/order-service/internal/kafka"
-	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/handler"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/repository"
+	"github.com/Egor-Pomidor-pdf/order-service/internal/order/service"
 	"github.com/Egor-Pomidor-pdf/order-service/internal/server"
 	"github.com/joho/godotenv"
 )
@@ -47,9 +49,9 @@ func main() {
 	log.Println("Successfully connected to PostgreSQL")
 
     // Инициализация репозиториев, сервисов и HTTP сервера
-	orderRepo := order.NewOrderRepository(db)
-	orderService := order.NewOrderService(*orderRepo)
-    orderHandler := order.NewOrderHandler(orderService)
+	orderRepo := repository.NewOrderRepository(db)
+	orderService := service.NewOrderService(orderRepo)
+    orderHandler := handler.NewOrderHandler(orderService)
     srv := server.NewServer(cfg.Server, orderService)
 
     // Запуск HTTP сервера в отдельной горутине
