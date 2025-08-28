@@ -32,7 +32,7 @@ func NewConsumer(handler Handler, cfg config.KafkaConfig) (*Consumer, error) {
 		"session.timeout.ms":       sessionTimeout,
 		"enable.auto.offset.store": false,
 		"enable.auto.commit":       false,
-		"auto.offset.reset":        "earliest",
+		"auto.offset.reset":        "latest",
 	}
 
 	c, err := kafka.NewConsumer(kafkaConfig)

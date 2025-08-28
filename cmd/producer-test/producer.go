@@ -18,7 +18,7 @@ func main() {
 	topic := "orders"
 
 	message := `{
-   "order_uid": "b563feb7b2b84b6test10",
+   "order_uid": "52",
    "track_number": "WBILMTESTTRACK",
    "entry": "WBIL",
    "delivery": {

@@ -19,7 +19,7 @@
 
 3.  **Запустите приложение:**
     ```bash
-    docker-compose up --build
+    make build
     ```
 
 4.  **Приложение будет доступно по адресу:** http://localhost:8080
@@ -36,9 +36,3 @@
 - Docker
 - Docker Compose
 
-## 🐛 Troubleshooting
-
-Если возникают проблемы с подключением к БД:
-```bash
-docker-compose down -v
-docker-compose up --build

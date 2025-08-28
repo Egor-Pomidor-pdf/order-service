@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"sync"
 
 	"github.com/Egor-Pomidor-pdf/order-service/internal/order"
@@ -42,6 +43,7 @@ func (s *OrderService) restoreCache(ctx context.Context) {
 	for _, order := range orders {
 		s.cache[order.OrderUID] = order
 	}
+	slog.Info("Restore cache")
 }
 
 
@@ -64,11 +66,13 @@ func (s *OrderService) GetOrder(ctx context.Context, uid string) (*order.Order, 
 	s.mu.RUnlock()
 
 	if exists {
+		slog.Info(" Order from cache\n","uid", uid)
 		return &cachedOrder, nil
 	}
 
 	// Если нет в кэше, ищем в БД
 	order, err := s.repo.GetOrderByUID(ctx, uid)
+	slog.Info(" Order from bd\n","uid", uid)
 	if err != nil {
 		return nil, errors.New("Service Error")
 	}
