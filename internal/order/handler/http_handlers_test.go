@@ -20,6 +20,7 @@ import (
 func TestHandler_GetOrderHandler(t *testing.T) {
 // init test Table
 type mockBehavior func(s *mock_service.MockOrderServiceInterface, order_uid string)
+
 	tests := []struct {
 		name                 string
 		order_uid            string
